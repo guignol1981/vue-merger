@@ -1,0 +1,12 @@
+{
+  "name": "vue-merger",
+  "version": "1.0.0",
+  "description": "Merge .html, .scss and .ts into a single .vue file",
+  "main": "main.js",
+  "scripts": {
+    "test": "node main.js"
+  },
+  "author": "DM",
+  "license": "ISC",
+  "type": "module"
+}
