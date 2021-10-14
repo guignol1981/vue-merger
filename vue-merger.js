@@ -7,7 +7,7 @@ const tsPath = 'exemple/entete.ts'; // todo: dynamic path based on name
 const scssPath = 'exemple/entete.scss'; // todo: dynamic path based on name
 const vuePath = nom + '.vue'; // todo: put path at correct location
 
-async function initialize() {
+async function merge(path) {
     await mergeHTML();
     await mergeTS();
     await mergeSCSS();
@@ -71,4 +71,4 @@ function mergeSCSS() {
     })
 }
 
-export { initialize };
+export default merge;

@@ -1,3 +1,3 @@
-import { initialize } from './vue-merger.js';
+import merge from './vue-merger.js';
 
-initialize();
+merge('test');
