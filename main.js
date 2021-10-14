@@ -1,4 +1,4 @@
-import { initialize } from './vue-merger.js'
-import { findFiles } from './file-finder.js'
+import { initialize } from './vue-merger.js';
+import { findFiles } from './file-finder.js';
 
-findFiles((path) => initialize(path))
+findFiles((path) => initialize(path));
