@@ -1,17 +1,15 @@
 import fs from 'fs';
 import path from 'path';
 
-function joinResultPath(p, q = '') {
-    return path.join(p, q);
-}
-
 function findFiles(callback) {
-    function exploreDirectoryTree(currentPath = joinResultPath(process.cwd())) {
+    function exploreDirectoryTree(currentPath = path.join(process.cwd())) {
         fs.readdirSync(currentPath).forEach((e) => {
-            if (fs.lstatSync(joinResultPath(currentPath, e)).isDirectory()) {
-                exploreDirectoryTree(joinResultPath(currentPath, e));
+            const filePath = path.join(currentPath, e);
+
+            if (fs.lstatSync(filePath).isDirectory()) {
+                exploreDirectoryTree(filePath);
             } else if (e.includes('.html')) {
-                callback(joinResultPath(currentPath, e).replace('.html', ''));
+                callback(filePath.replace('.html', ''));
             }
         });
     }
