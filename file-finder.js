@@ -6,7 +6,7 @@ function findFiles(callback, deep = false) {
         fs.readdirSync(currentPath).forEach((e) => {
             const filePath = path.join(currentPath, e);
 
-            if (fs.lstatSync(filePath).isDirectory() && !deep) {
+            if (fs.lstatSync(filePath).isDirectory() && deep) {
                 exploreDirectoryTree(filePath);
             } else if (e.includes('.html')) {
                 callback(filePath.replace('.html', ''));
@@ -16,5 +16,4 @@ function findFiles(callback, deep = false) {
 
     exploreDirectoryTree();
 }
-
 export default findFiles;
