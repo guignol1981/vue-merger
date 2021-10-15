@@ -1,0 +1,176 @@
+@import '~@ulaval/modul-components/dist/styles/commons';
+
+.pp-entete {
+    &__bandeau {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        padding: $m-spacing--s $m-spacing;
+        background: $m-color--grey-lightest;
+    }
+
+    &__bouton-bandeau {
+        flex-shrink: 0;
+
+        &.m-button.m-button {
+            font-size: $m-font-size--s;
+            padding: 6px 12px; // Magic number
+
+            &:not(:focus):not(:hover) {
+                background: none;
+            }
+        }
+
+        + .pp-entete__bouton-bandeau {
+            margin-left: $m-spacing--s;
+
+            @media (min-width: $m-mq--min--s) {
+                margin-left: $m-spacing;
+            }
+        }
+    }
+
+    &__bouton-admin {
+        transition: background $m-transition-duration ease;
+        font-family: $m-font-family;
+        font-size: $m-font-size;
+        color: $m-color--white;
+        border: none;
+        appearance: none;
+        outline: none;
+        display: flex;
+        align-items: center;
+        height: 44px; // Magic number
+        margin-left: $m-spacing;
+
+        @include m-button--primary();
+        @include m-button--hover();
+
+        --m-base-button--border-radius: 0;
+    }
+
+    &__texte-bouton-admin {
+        margin-left: $m-spacing--s;
+    }
+
+    &__icone-fichier-bandeau {
+        &.pp--is-disbled {
+            opacity: 0.4;
+        }
+    }
+
+    &__titre-bandeau {
+        flex: 1 1 auto;
+        margin: 0;
+        font-weight: $m-font-weight--semi-bold;
+        font-size: $m-font-size--l;
+    }
+
+    &__corps {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        background: linear-gradient(
+            to bottom,
+            $m-color--grey-darkest,
+            $m-color--grey-darker
+        );
+    }
+
+    &__indicateur-progression {
+        flex-shrink: 0;
+        width: 100%;
+        background: #4f4f4f; // Magic color
+    }
+
+    &.pp--has-acces-site-admin {
+        .pp-entete__bandeau {
+            padding: 0 0 0 $m-spacing; // Magic number
+        }
+    }
+
+    &.pp--is-etat-chargement-profil-actif {
+        .pp-entete__indicateur-progression {
+            max-width: 340px;
+        }
+    }
+
+    &.pp--is-small-mobile,
+    &.pp--is-mobile {
+        .pp-entete__indicateur-progression {
+            max-width: 100%;
+        }
+
+        .pp-entete__corps {
+            flex-direction: column;
+            max-width: 100%;
+        }
+
+        .pp-entete__profil {
+            padding: $m-spacing;
+            width: 100%;
+
+            @media (min-width: $m-mq--min--s) {
+                padding: $m-spacing--m $m-spacing;
+            }
+        }
+
+        .pp-entete__bouton-admin {
+            justify-content: center;
+            width: 44px; // Magic number
+        }
+    }
+
+    &.pp--is-small-mobile {
+        .pp-entete__indicateur-progression {
+            max-width: 300px;
+
+            @media (max-width: $m-mq--max--s) {
+                max-width: 100%;
+            }
+        }
+    }
+
+    &.pp--is-tablette {
+        .pp-entete__indicateur-progression {
+            max-width: 340px;
+        }
+    }
+
+    &.pp--is-desktop {
+        .pp-entete__indicateur-progression {
+            max-width: 460px;
+        }
+    }
+
+    &.pp--is-tablette,
+    &.pp--is-desktop {
+        .pp-entete__indicateur-progression {
+            transition: max-width $m-transition-duration--s linear;
+            border-radius: 8px;
+            margin-left: $m-spacing;
+            box-shadow: $m-box-shadow--l;
+        }
+
+        .pp-entete__corps {
+            padding: $m-spacing--l;
+        }
+
+        &.pp--has-acces-site-admin .pp-entete__bandeau {
+            padding: 0 0 0 $m-spacing--l;
+        }
+
+        &:not(.pp--has-acces-site-admin) .pp-entete__bandeau {
+            padding: $m-spacing $m-spacing--l;
+        }
+
+        .pp-entete__bouton-admin {
+            height: 60px; // Magic number
+            padding: 0 $m-spacing;
+        }
+
+        .pp-entete__titre-bandeau {
+            font-size: $m-font-size--h5;
+        }
+    }
+}
