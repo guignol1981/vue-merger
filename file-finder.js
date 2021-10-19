@@ -1,17 +1,49 @@
 import fs from 'fs';
 import path from 'path';
 
+/**
+ *
+ * @param {*} callback: function that take a path and object of type {html: bool, scss: bool, ts: bool }
+ * @param {*} deep : flag that determine if the function should deep in the directories.
+ */
 function findFiles(callback, deep = false) {
     function exploreDirectoryTree(currentPath = path.join(process.cwd())) {
-        fs.readdirSync(currentPath).forEach((e) => {
-            const filePath = path.join(currentPath, e);
+        fs.readdirSync(currentPath)
+            .sort((a, b) => {
+                a = path.join(currentPath, a);
+                b = path.join(currentPath, b);
 
-            if (fs.lstatSync(filePath).isDirectory() && deep) {
-                exploreDirectoryTree(filePath);
-            } else if (e.includes('.html')) {
-                callback(filePath.replace('.html', ''));
-            }
-        });
+                if (
+                    fs.lstatSync(a).isDirectory() &&
+                    !fs.lstatSync(b).isDirectory()
+                )
+                    return -1;
+                if (
+                    !fs.lstatSync(a).isDirectory() &&
+                    fs.lstatSync(b).isDirectory()
+                )
+                    return 1;
+                return 0;
+            })
+            .every((e) => {
+                const filePath = path.join(currentPath, e);
+
+                if (fs.lstatSync(filePath).isDirectory() && deep) {
+                    exploreDirectoryTree(filePath);
+                } else if (e.includes('.html')) {
+                    const componentFiles = fs
+                        .readdirSync(currentPath)
+                        .filter((e) => e.includes('.scss') || e.includes('.ts'))
+                        .concat(e);
+                    callback(filePath.replace('.html', ''), {
+                        html: true,
+                        scss: !!componentFiles.find((e) => e.includes('.scss')),
+                        ts: !!componentFiles.find((e) => e.includes('.ts')),
+                    });
+                    return false;
+                }
+                return true;
+            });
     }
 
     exploreDirectoryTree();
