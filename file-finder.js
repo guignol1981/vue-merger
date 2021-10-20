@@ -30,11 +30,12 @@ function findFiles(callback, deep = false) {
 
                 if (fs.lstatSync(filePath).isDirectory() && deep) {
                     exploreDirectoryTree(filePath);
-                } else if (e.includes('.html')) {
+                } else if (e.includes('.html') && !e.includes('index')) {
                     const componentFiles = fs
                         .readdirSync(currentPath)
                         .filter((e) => e.includes('.scss') || e.includes('.ts'))
                         .concat(e);
+                    console.log(e);
                     callback(filePath.replace('.html', ''), {
                         html: true,
                         scss: !!componentFiles.find((e) => e.includes('.scss')),
