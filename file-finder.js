@@ -3,8 +3,8 @@ import path from 'path';
 
 /**
  *
- * @param {*} callback: function that take a path and object of type {html: bool, scss: bool, ts: bool }
- * @param {*} deep : flag that determine if the function should deep in the directories.
+ * @param {function} callback: function that take a path and object of type {html: bool, scss: bool, ts: bool }
+ * @param {number} deep : flag that determine if the function should deep in the directories (if yes 1, else nothing).
  */
 function findFiles(callback, deep = false) {
     function exploreDirectoryTree(currentPath = path.join(process.cwd())) {
