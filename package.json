@@ -1,6 +1,6 @@
 {
     "name": "vue-merger",
-    "version": "1.0.9",
+    "version": "1.0.10",
     "description": "Merge .html, .scss and .ts into a single .vue file",
     "main": "main.js",
     "bin": "./main.js",
