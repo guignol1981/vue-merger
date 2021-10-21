@@ -56,12 +56,28 @@ function mergeTS(path) {
 
         lineReaderTS.on('line', function (line) {
             if (!line.includes('WithRender')) {
-                appendFileSync(path + '.vue', line + '\n');
+                if (line.includes('extends') && !line.includes('default')) {
+                    // insert 'default ' into position
+                    const position = 7;
+                    const output = [
+                        line.slice(0, position),
+                        'default ',
+                        line.slice(position),
+                    ].join('');
+
+                    appendFileSync(path + '.vue', output + '\n');
+                } else {
+                    appendFileSync(path + '.vue', line + '\n');
+                }
             }
 
             if (line.includes('export default class ')) {
                 componentName = line
                     .split('export default class ')[1]
+                    .split(' extends')[0];
+            } else if (line.includes('export class ')) {
+                componentName = line
+                    .split('export class ')[1]
                     .split(' extends')[0];
             }
         });
