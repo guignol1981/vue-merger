@@ -1,16 +1,28 @@
 import { writeFileSync, createReadStream, appendFileSync } from 'fs';
+import fs from 'fs';
 import { createInterface } from 'readline';
+import nodePath from 'path';
 
-const nom = 'entete'; // todo: bind node param from command line
-const htmlPath = 'exemple/entete.html'; // todo: dynamic path based on name
-const tsPath = 'exemple/entete.ts'; // todo: dynamic path based on name
-const scssPath = 'exemple/entete.scss'; // todo: dynamic path based on name
-const vuePath = nom + '.vue'; // todo: put path at correct location
+async function merge(path, options, clean) {
+    let componentName;
 
-async function merge(path) {
-    await mergeHTML(path);
-    // await mergeTS(path)
-    // await mergeSCSS(path)
+    if (options.html) {
+        await mergeHTML(path);
+    }
+
+    if (options.ts) {
+        componentName = await mergeTS(path);
+    }
+
+    if (options.scss) {
+        await mergeSCSS(path);
+    }
+
+    await createIndex(path, componentName);
+
+    if (clean) {
+        removeOldFiles(path, options);
+    }
 }
 
 function mergeHTML(path) {
@@ -32,43 +44,84 @@ function mergeHTML(path) {
     });
 }
 
-function mergeTS() {
+function mergeTS(path) {
     return new Promise((resolve) => {
-        appendFileSync(vuePath, '<script lang="ts">\n');
+        let componentName;
+
+        appendFileSync(path + '.vue', '<script lang="ts">\n');
 
         const lineReaderTS = createInterface({
-            input: createReadStream(tsPath),
+            input: createReadStream(path + '.ts'),
         });
 
         lineReaderTS.on('line', function (line) {
-            appendFileSync(vuePath, line + '\n');
+            if (!line.includes('WithRender')) {
+                appendFileSync(path + '.vue', line + '\n');
+            }
+
+            if (line.includes('export default class ')) {
+                componentName = line
+                    .split('export default class ')[1]
+                    .split(' extends')[0];
+            }
         });
 
         lineReaderTS.on('close', function () {
-            appendFileSync(vuePath, '</script>\n\n');
+            appendFileSync(path + '.vue', '</script>\n\n');
+            resolve(componentName);
+        });
+    });
+}
+
+function mergeSCSS(path) {
+    return new Promise((resolve) => {
+        appendFileSync(path + '.vue', '<style scoped lang="scss">\n');
+
+        const lineReaderTS = createInterface({
+            input: createReadStream(path + '.scss'),
+        });
+
+        lineReaderTS.on('line', function (line) {
+            appendFileSync(path + '.vue', line + '\n');
+        });
+
+        lineReaderTS.on('close', function () {
+            appendFileSync(path + '.vue', '</style>\n');
             resolve();
         });
     });
 }
 
-function mergeSCSS() {
-    // todo: handle scope
+function createIndex(path, componentName) {
     return new Promise((resolve) => {
-        appendFileSync(vuePath, '<style lang="scss">\n');
+        const filename = nodePath.basename(path);
+        const dirname = nodePath.dirname(path);
 
-        const lineReaderTS = createInterface({
-            input: createReadStream(scssPath),
-        });
+        writeFileSync(
+            dirname + '/index.ts',
+            'export { default as ' +
+                componentName +
+                " } from './" +
+                filename +
+                ".vue'"
+        );
 
-        lineReaderTS.on('line', function (line) {
-            appendFileSync(vuePath, line + '\n');
-        });
-
-        lineReaderTS.on('close', function () {
-            appendFileSync(vuePath, '</style>\n');
-            resolve();
-        });
+        resolve();
     });
+}
+
+function removeOldFiles(path, options) {
+    if (options.html) {
+        fs.unlink(path + '.html', () => {});
+    }
+
+    if (options.ts) {
+        fs.unlink(path + '.ts', () => {});
+    }
+
+    if (options.scss) {
+        fs.unlink(path + '.scss', () => {});
+    }
 }
 
 export default merge;

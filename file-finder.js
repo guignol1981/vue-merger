@@ -35,7 +35,6 @@ function findFiles(callback, deep = false) {
                         .readdirSync(currentPath)
                         .filter((e) => e.includes('.scss') || e.includes('.ts'))
                         .concat(e);
-                    console.log(e);
                     callback(filePath.replace('.html', ''), {
                         html: true,
                         scss: !!componentFiles.find((e) => e.includes('.scss')),
