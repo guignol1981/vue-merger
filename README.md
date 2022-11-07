@@ -17,5 +17,5 @@ vue-merger
 
 * Pour exécuter le script à partir du repertoire courant et inclure l'intégralité de l'arborescence, exécuter: 
 ```
-vue-merger 1
+vue-merger --deep
 ```
